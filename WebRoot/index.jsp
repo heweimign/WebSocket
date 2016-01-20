@@ -18,8 +18,10 @@
 	<link rel="stylesheet" type="text/css" href="css/websocket.css" />
 	
 	<!-- 映入Ext的JS开发包，及自己实现的webscoket. -->
+	<scippt type="text/javascript" src="javascript/jquery-1.8.3.min.js"></scippt>
 	<script type="text/javascript" src="ext4/ext-all-debug.js"></script>
-	<script type="text/javascript" src="websocket.js"></script>
+	<script type="text/javascript" src="js/index.js"></script>
+	<script type="text/javascript" src="js/websocket.js"></script>
 	<script type="text/javascript">
 		var user = "${user}";
 	</script>
@@ -34,6 +36,13 @@
 		<li>结合Ext进行页面展示</li>
 		<li>用户上线下线通知</li>
 	</ul>
-	<div id="websocket_button"></div>
+	<div id="userInfoDiv"> 
+	<form id="userInfo" action="ChangeNickname" method="post">
+		<label>自定义昵称：</label>
+		<input type="text" name="nickname" id="nickname" >
+		<input type="submit" value="保存">
+	</form>
+	</div>
+	<div id="websocket_button">qqqqqqqqqqqqqqqqqqqqqqqqq</div>
 </body>
 </html>

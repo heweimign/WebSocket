@@ -68,6 +68,7 @@ Ext.onReady(function() {
 						enableFont : false,
 						enableSourceEdit : false,
 						enableAlignments : false,
+						
 						listeners : {
 							initialize : function() {
 								Ext.EventManager.on(me.input.getDoc(), {
@@ -77,9 +78,19 @@ Ext.onReady(function() {
 													e.preventDefault();
 													e.stopPropagation();
 													send();
+													alert("send");
 												}
 											}
 										});
+							},
+							specialkey:function(f,e){
+//								if(e.getKey() == e.ENTER){
+//									send();
+//								}
+								if(e.keyCode == 13){
+									alert("11");
+									send();
+								}
 							}
 						}
 					});
@@ -97,6 +108,7 @@ Ext.onReady(function() {
 									handler : send
 								}]
 					});
+			
 			var websocket;
 
 			//初始话WebSocket
@@ -104,20 +116,24 @@ Ext.onReady(function() {
 				if (window.WebSocket) {
 					websocket = new WebSocket("ws://localhost:8080/WebSocket/message");
 /*					websocket = new WebSocket(encodeURI('ws://172.17.16.68:8080/WebSocket/message'));
-*/					websocket.onopen = function() {
+*/					//监听连接
+					websocket.onopen = function() {
 						//连接成功
-						win.setTitle(title + '&nbsp;&nbsp;(已连接)');
+						win.setTitle(title + '&nbsp;&nbsp;(已连接123)');
 					}
+					//监听失败事件，发送错误时会调用此方法
 					websocket.onerror = function() {
 						//连接失败
 						win.setTitle(title + '&nbsp;&nbsp;(连接发生错误)');
 					}
+					//监听关闭事件————服务器关闭此socket连接
 					websocket.onclose = function() {
 						//连接断开
 						win.setTitle(title + '&nbsp;&nbsp;(已经断开连接)');
 					}
-					//消息接收
+					//监听消息接收，服务器往client发送消息时会触发这个方法
 					websocket.onmessage = function(message) {
+						//message : {"from":"游客2","content":"mess","timestamp":"145276135504","type":"message"}
 						var message = JSON.parse(message.data);
 						//接收用户发送的消息
 						if (message.type == 'message') {
@@ -216,4 +232,21 @@ Ext.onReady(function() {
 					Ext.Msg.alert('提示', '您已经掉线，无法发送消息!');
 				}
 			}
+			
+			function bindEnter(obj){
+//				var enter = $("#button-1031-btnEl");
+				if(obj.keyCode == 13){//判断按下的是哪一个键，13代表的是回车键
+					send();
+//					enter.click();
+					obj.returnValue = false;
+//					b_onclick();
+				}
+			}
+			
+			
 		});
+
+
+function b_onclick() {  
+	alert("你好！");
+}

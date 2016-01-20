@@ -22,36 +22,41 @@ public class WebSocketMessageInbound extends MessageInbound {
 		return this.user;
 	}
 
-	//建立连接的触发的事件
+	//建立连接的触发的事件，服务器可以通过此方法主动推送消息给客户端
 	@Override
 	protected void onOpen(WsOutbound outbound) {
+		
 		// 触发连接事件，在连接池中添加连接
 		JSONObject result = new JSONObject();
 		result.element("type", "user_join");
 		result.element("user", this.user);
+		
 		//向所有在线用户推送当前用户上线的消息
 		WebSocketMessageInboundPool.sendMessage(result.toString());
+		
+		//向连接池添加当前的连接对象
+		WebSocketMessageInboundPool.addMessageInbound(this);
 		
 		result = new JSONObject();
 		result.element("type", "get_online_user");
 		result.element("list", WebSocketMessageInboundPool.getOnlineUser());
-		//向连接池添加当前的连接对象
-		WebSocketMessageInboundPool.addMessageInbound(this);
+
 		//向当前连接发送当前在线用户的列表
 		WebSocketMessageInboundPool.sendMessageToUser(this.user, result.toString());
 	}
 
 	@Override
 	protected void onClose(int status) {
-		// 触发关闭事件，在连接池中移除连接
+		// 触发关闭事件，在连接池中移除连接，服务器主动关闭webSocket连接
 		WebSocketMessageInboundPool.removeMessageInbound(this);
 		JSONObject result = new JSONObject();
 		result.element("type", "user_leave");
 		result.element("user", this.user);
-		//向在线用户发送当前用户退出的消息
+		//向在线用户发送当前用户退出的消息,jsp页面的客户端会收到此信息
 		WebSocketMessageInboundPool.sendMessage(result.toString());
 	}
 
+	//二进制文件，如音频等文件传输。后期可以研究一下这个功能
 	@Override
 	protected void onBinaryMessage(ByteBuffer message) throws IOException {
 		throw new UnsupportedOperationException("Binary message not supported.");
